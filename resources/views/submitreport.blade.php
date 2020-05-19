@@ -50,13 +50,13 @@
                     <div class="form-group">
                         <label for="workingtime_start" class="col-md-12 col-form-label">Hari ini, kamu mulai kerja jam
                             berapa?</label>
-                        <input id="workingtime_start" type="datetime-local" class="form-control" name="workstart"
+                        <input id="workingtime_start" type="time" class="form-control" name="workstart"
                             placeholder="HH:MM">
                     </div>
 
                     <div class="form-group">
                         <label for="workingtime_end" class="col-md-12 col-form-label">Selesainya jam berapa?</label>
-                        <input id="workingtime_end" type="datetime-local" class="form-control" name="workend"
+                        <input id="workingtime_end" type="time" class="form-control" name="workend"
                             placeholder="HH:MM">
                     </div>
 
@@ -93,63 +93,117 @@
         };
         firebase.initializeApp(config);
         var database = firebase.database();
-        var lastIndex = 0;
 
-        // Add Data
+        let breaktime = 0,
+            nettHour = 0,
+            totalWork = 0
+
+        // Submit Report Function
         $('#sendReport').on('click', function () {
 
-            var start = Date.parse($("input#workingtime_start").val());
-            var end = Date.parse($("input#workingtime_end").val());
+            // Get values from the forms
+            start = $("#workingtime_start").val()
+            end = $("#workingtime_end").val()
 
-            let breaktime = 0
-            $('.breaktimes').each(function() {
-                if (this.checked) {
-                    breaktime += 1
-                }
-            });
-            console.log("Total Breaktime used is " + breaktime)
 
-            totalHours = 0;
-            nettHours = 0;
-            if (start < end) {
-                totalHours = Math.floor((end - start) / 1000 / 60 / 60);
-                nettHours = totalHours - breaktime;
+            // Start Calculation for the work hours and breaktimes
+            breakTimeCalculator(start, end)
+            workTime_total(start, end)
+            workTime_nett(totalWork, breaktime)
+
+            /* if (breaktime != breaktime_formcheck) {
+                alert("Waktu istirahat dan pilihan istirahatmu tidak cocok!")
+                return;
+            } */
+
+            // Data Object to be pushed into firebase
+            reportDetails = {
+                name: $("name").val(),
+                uid : $("#uid").val(),
+                today_jobs : $("#today_jobs").val(),
+                today_jobs_problems : $("#today_jobs_problems").val(),
+                workingtime_start : $("#workingtime_start").val(),
+                workingtime_end : $("#workingtime_end").val(),
+                breaktimes : breaktime,
+                workhour_total : totalHours,
+                workhour_net : nettHours,
             }
-            
-            var name = $("#name").val();
-            var uid = $("#uid").val();
-            var today_jobs = $("#today_jobs").val();
-            var today_jobs_problems = $("#today_jobs_problems").val();
-            var workingtime_start = $("#workingtime_start").val();
-            var workingtime_end = $("#workingtime_end").val();
-            var breaktimes = breaktime;
-            var workhour_total = totalHours;
-            var workhour_net = nettHours;
 
-            var userID = lastIndex + 1;
-            firebase.database().ref('reporting/').push({
-                name: name,
-                uid: uid,
-                today_jobs: today_jobs,
-                today_jobs_problems: today_jobs_problems,
-                workingtime_start: workingtime_start,
-                workingtime_end: workingtime_end,
-                breaktimes: breaktimes,
-                wokrhour_total: workhour_total,
-                workhour_net: workhour_net,
-                timestamp: Date()
-            }, function(error){
+            // Push data to the firebase
+            //firebasePush(reportDetails)
+
+            // Prints data to the consoles for debugging
+            console.log("Mulai kerja jam: " + start)
+            console.log("Berhenti kerja jam: " + end)
+            console.log("Breaktime selama: " + breaktime)
+            console.log("==================")
+            console.log("Total Worktime: " + totalWork)
+            console.log("Net Hour: " + nettHour)
+            console.log(reportDetails)
+
+            // Cleans Input Forms
+            $("#addReport input").val("");
+        });
+
+        function breakTimeCalculator(startTime, endTime) {
+            // Kerja sebelum jam 12AM sampai diatas jam 7PM
+            if (startTime < "12:00" && endTime > "19:00") {
+                breaktime = 3
+            }
+            // Kerja sebelum jam 12AM sampai diatas jam 5PM
+            else if (startTime < "12:00" && endTime > "17:00") {
+                breaktime = 2
+            }
+            // Kerja sebelum jam 12AM sampai diatas jam 1PM
+            else if (startTime < "12:00" && endTime > "13:00") {
+                breaktime = 1
+            }
+            // Kerja sesudah jam 1PM & jam 4PM sampai diatas jam 7 PM
+            else if ((startTime > "13:00" && startTime > "16:00") && endTime > "19:00") {
+                breaktime = 2
+            }
+            // Kerja sesudah jam 1PM & jam 4PM sampai diatas jam 5 PM
+            else if ((startTime > "13:00" && startTime > "16:00") && endTime > "17:00") {
+                breaktime = 2
+            }
+            // Kerja sesudah jam 5PM & jam 6PM sampai diatas jam 7 PM
+            else if ((startTime > "17:00" && startTime > "18:00") && endTime > "19:00") {
+                breaktime = 2
+            }
+            return breaktime;
+        }
+
+        function workTime_nett(totalWork, breaktime) {
+            nettHour = totalWork - breaktime
+
+            return nettHour;
+        }
+
+        function timeStringToFloat(time) {
+            var hoursMinutes = time.split(/[.:]/);
+            var hours = parseInt(hoursMinutes[0], 10);
+            var minutes = hoursMinutes[1] ? parseInt(hoursMinutes[1], 10) : 0;
+            return hours + minutes / 60;
+        }
+
+        function workTime_total(startTime, endTime) {
+            timeWork_start = timeStringToFloat(startTime)
+            timework_end = timeStringToFloat(endTime)
+            totalWork = timework_end - timeWork_start
+
+            return totalWork;
+        }
+
+        function firebasePush(reports) {
+            firebase.database().ref('reporting/').push(reportsDetails,
+            function (error) {
                 if (error) {
                     alert("Could not send the report! Please try again")
                 } else {
                     alert("Report Submitted. Thank you")
                 }
             });
-
-            // Reassign lastID value
-            lastIndex = userID;
-            $("#addReport input").val("");
-        });
+        }
 
     </script>
 
