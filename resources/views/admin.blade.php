@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-
+    <!-- Bootstrap CSS-->
+    <link defer rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+     
     <title>Daily Reports App</title>
 
 </head>
@@ -34,10 +34,10 @@
 <form action="" method="POST" class="users-update-record-model form-horizontal">
     <div id="update-modal" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="custom-width-modalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="width:55%;">
+        <div class="modal-dialog modal-dialog-centered" style="width:200%;">
             <div class="modal-content" style="overflow: hidden;">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="custom-width-modalLabel">Update</h4>
+                    <h4 class="modal-title" id="custom-width-modalLabel">Informasi Pekerjaan</h4>
                     <button type="button" class="close" data-dismiss="modal"
                             aria-hidden="true">×
                     </button>
@@ -48,8 +48,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light"
                             data-dismiss="modal">Close
-                    </button>
-                    <button type="button" class="btn btn-success updateCustomer">Update
                     </button>
                 </div>
             </div>
@@ -84,34 +82,64 @@
                 htmls.push('<tr>\
         		<td>' + value.name + '</td>\
         		<td>' + value.timestamp + '</td>\
-        		<td><button data-toggle="modal" data-target="#update-modal" class="btn btn-info updateData" data-id="' + index + '">Update</button>\
-        		<button data-toggle="modal" data-target="#remove-modal" class="btn btn-danger removeData" data-id="' + index + '">Delete</button></td>\
+        		<td><button data-toggle="modal" data-target="#update-modal" class="btn btn-info updateData" data-id="' + index + '">View data</button>\
         	</tr>');
             }
             lastIndex = index;
         });
         $('#tbody').html(htmls);
-        $("#submitUser").removeClass('desabled');
+        $("#submitUser").removeClass('disabled');
     });
 
     // Update Data
     var updateID = 0;
     $('body').on('click', '.updateData', function () {
         updateID = $(this).attr('data-id');
-        firebase.database().ref('customers/' + updateID).on('value', function (snapshot) {
+        firebase.database().ref('reporting/' + updateID).once('value', function (snapshot) {
             var values = snapshot.val();
+            console.log(values)
             var updateData = '<div class="form-group">\
-		        <label for="first_name" class="col-md-12 col-form-label">Name</label>\
+		        <label for="first_name" class="col-md-12 col-form-label font-weight-bold">Name</label>\
 		        <div class="col-md-12">\
-		            <input id="first_name" type="text" class="form-control" name="name" value="' + values.name + '" required autofocus>\
+		            <input id="first_name" type="text" class="form-control-plaintext" name="name" value="'+ values.name +'">\
 		        </div>\
-		    </div>\
-		    <div class="form-group">\
-		        <label for="last_name" class="col-md-12 col-form-label">Email</label>\
+            </div>\
+            <div class="form-group">\
+		        <label for="first_name" class="col-md-12 col-form-label font-weight-bold">Nomor Internship</label>\
 		        <div class="col-md-12">\
-		            <input id="last_name" type="text" class="form-control" name="email" value="' + values.email + '" required autofocus>\
+		            <input id="first_name" type="text" class="form-control-plaintext" name="name" value="'+ values.uid + '">\
 		        </div>\
-		    </div>';
+            </div>\
+            <div class="form-group">\
+		        <label for="first_name" class="col-md-12 col-form-label font-weight-bold">Pekerjaan</label>\
+		        <div class="col-md-12">\
+		            <input id="first_name" type="text" class="form-control-plaintext" name="name" value="'+ values.today_jobs +'">\
+		        </div>\
+            </div>\
+            <div class="form-group">\
+		        <label for="first_name" class="col-md-12 col-form-label font-weight-bold">Deskripsi</label>\
+		        <div class="col-md-12">\
+		            <input id="first_name" type="text" class="form-control-plaintext" name="name" value="'+ values.today_jobs_problems +'">\
+		        </div>\
+            </div>\
+            <div class="form-group">\
+		        <label for="first_name" class="col-md-12 col-form-label font-weight-bold">Waktu Bekerja </label>\
+		        <div class="col-md-12">\
+		            <input id="first_name" type="text" class="form-control-plaintext" name="name" value="'+ values.workingtime_start + ' until ' + values.workingtime_end +'">\
+		        </div>\
+            </div>\
+            <div class="form-group">\
+		        <label for="first_name" class="col-md-12 col-form-label font-weight-bold">Lama Jam Kerja (bersih)</label>\
+		        <div class="col-md-12">\
+		            <input id="first_name" type="text" class="form-control-plaintext" name="name" value="'+ values.workhour_net +'">\
+		        </div>\
+            </div>\
+            <div class="form-group">\
+		        <label for="first_name" class="col-md-12 col-form-label font-weight-bold">Tanggal laporan dibuat</label>\
+		        <div class="col-md-12">\
+		            <input id="first_name" type="text" class="form-control-plaintext" name="name" value="'+ values.timestamp +'">\
+		        </div>\
+            </div>';
 
             $('#updateBody').html(updateData);
         });
