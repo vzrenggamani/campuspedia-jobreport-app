@@ -24,8 +24,8 @@
             <div class="card-body">
                 <form id="addReport" class="users-update-record-model form-horizontal" method="POST" action="">
                     <div class="form-group">
-                        <label for="name" class="col-md-12 col-form-label">Name</label>
-                        <input id="name" type="text" class="form-control" name="name" placeholder="Name" required
+                        <label for="intern_name" class="col-md-12 col-form-label">Name</label>
+                        <input id="intern_name" type="text" class="form-control" name="name" placeholder="Name" required
                             autofocus>
                     </div>
 
@@ -118,19 +118,21 @@
 
             // Data Object to be pushed into firebase
             reportDetails = {
-                name: $("name").val(),
+                name: $("#intern_name").val(),
                 uid : $("#uid").val(),
                 today_jobs : $("#today_jobs").val(),
                 today_jobs_problems : $("#today_jobs_problems").val(),
                 workingtime_start : $("#workingtime_start").val(),
                 workingtime_end : $("#workingtime_end").val(),
                 breaktimes : breaktime,
-                workhour_total : totalHours,
-                workhour_net : nettHours,
+                workhour_total : totalWork,
+                workhour_net : nettHour,
+                timestamp: Date(),
             }
 
+
             // Push data to the firebase
-            //firebasePush(reportDetails)
+            firebasePush(reportDetails)
 
             // Prints data to the consoles for debugging
             console.log("Mulai kerja jam: " + start)
