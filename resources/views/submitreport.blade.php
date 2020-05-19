@@ -136,7 +136,8 @@
                 workingtime_end: workingtime_end,
                 breaktimes: breaktimes,
                 wokrhour_total: workhour_total,
-                workhour_net: workhour_net
+                workhour_net: workhour_net,
+                timestamp: Date()
             });
 
             // Reassign lastID value
