@@ -127,7 +127,7 @@
             var workhour_net = nettHours;
 
             var userID = lastIndex + 1;
-            firebase.database().ref('reporting/' + userID).set({
+            firebase.database().ref('reporting/').push({
                 name: name,
                 uid: uid,
                 today_jobs: today_jobs,
@@ -138,6 +138,12 @@
                 wokrhour_total: workhour_total,
                 workhour_net: workhour_net,
                 timestamp: Date()
+            }, function(error){
+                if (error) {
+                    alert("Could not send the report! Please try again")
+                } else {
+                    alert("Report Submitted. Thank you")
+                }
             });
 
             // Reassign lastID value
