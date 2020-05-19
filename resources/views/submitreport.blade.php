@@ -195,7 +195,7 @@
         }
 
         function firebasePush(reports) {
-            firebase.database().ref('reporting/').push(reportsDetails,
+            firebase.database().ref('reporting/').push(reports,
             function (error) {
                 if (error) {
                     alert("Could not send the report! Please try again")
