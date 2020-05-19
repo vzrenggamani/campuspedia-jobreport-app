@@ -1,0 +1,18 @@
+## [ Unrelease ]
+- Applying design styles from Carbon DS
+
+## [0.1.1-alpha] - 202-05-19
+### Added
+- Admin dashboard for viewing interns job reports
+- Add Detailed fields in job reporting
+- Connection to Firebase Realtime Database
+
+### Fixed
+- Firebase realtime databse key push
+
+### Known Bugs
+- Hardcoded breaktime timetracked
+
+## [0.1.0-alpha] - 2020-05-18
+### Added
+- Simple time track that show how much time spent by the users from html time input

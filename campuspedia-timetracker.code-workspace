@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.tabSize": 4,
+		"editor.detectIndentation": true,
+		"files.trimTrailingWhitespace": true,
+		"prettier.useTabs": false
+	}
+}
