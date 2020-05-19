@@ -30,4 +30,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'firebase' => [
+        'apiKey' => 'AIzaSyBcgTYnvkUI4lSFgx3XyY7NtrKmr8lu_7U',
+        'authDomain' => 'campuspedia-timetrack.firebaseapp.com',
+        'databaseURL' => 'https://campuspedia-timetrack.firebaseio.com',
+        'projectId' => 'campuspedia-timetrack',
+        'storageBucket' => 'campuspedia-timetrack.appspot.com',
+        'messagingSenderId' => '240849287434',
+        'appId' => '1:240849287434:web:f8af6dc74305403d91a2f3'
+    ]
+
 ];
